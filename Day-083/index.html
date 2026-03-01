@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mai Farahat — Python Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0e14;
+      --surface: #111520;
+      --border: #1e2535;
+      --accent: #00e5a0;
+      --accent2: #00b3ff;
+      --accent3: #ff6b6b;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --card: #141824;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 4rem;
+      background: rgba(11,14,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 4rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,229,160,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(0,229,160,0.3);
+      background: rgba(0,229,160,0.05);
+      color: var(--accent);
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero-name span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .typing-text {
+      color: var(--accent2);
+      border-right: 2px solid var(--accent2);
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { border-color: transparent; } }
+
+    .hero-desc {
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0b0e14;
+      font-weight: bold;
+    }
+    .btn-primary:hover {
+      background: #00ffb3;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,229,160,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      position: absolute;
+      right: 4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      animation: fadeLeft 0.8s 0.5s ease both;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 4rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-tag {
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 80px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    .about-text p strong { color: var(--text); }
+
+    .about-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .skill-tag {
+      background: rgba(0,229,160,0.07);
+      border: 1px solid rgba(0,229,160,0.2);
+      color: var(--accent);
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .terminal {
+      background: #0d1017;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 0.82rem;
+    }
+
+    .terminal-bar {
+      background: var(--border);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .terminal-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      line-height: 2;
+    }
+
+    .t-comment { color: #4a5568; }
+    .t-key { color: var(--accent2); }
+    .t-val { color: var(--accent); }
+    .t-str { color: #ffa657; }
+    .t-num { color: #ff6b6b; }
+    .t-list { color: #c9d1d9; }
+    .t-prompt { color: var(--muted); }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0,229,160,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover {
+      border-color: rgba(0,229,160,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .project-card:hover::before { opacity: 1; }
+
+    .project-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .project-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .project-day {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+    }
+
+    .project-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .project-tag {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(0,179,255,0.08);
+      border: 1px solid rgba(0,179,255,0.2);
+      color: var(--accent2);
+    }
+
+    /* Category headers */
+    .category-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 2.5rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .category-label span { color: var(--accent); }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-category {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .skill-category-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .skill-icon { font-size: 1.1rem; }
+
+    .skill-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-name {
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+
+    .skill-bar-wrap {
+      width: 100px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform-origin: left;
+      animation: grow 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* ── JOURNEY ── */
+    .journey-timeline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .journey-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+
+    .journey-card:hover { border-color: rgba(0,229,160,0.3); }
+
+    .journey-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .journey-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .journey-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align: center;
+    }
+
+    .contact-inner {
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .contact-inner .section-title { margin-bottom: 1rem; }
+    .contact-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-tag { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: all 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── PROGRESS RING (hero decoration) ── */
+    .progress-ring {
+      position: absolute;
+      right: 10rem;
+      bottom: 3rem;
+      z-index: 1;
+    }
+
+    .ring-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .ring-label strong {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: block;
+    }
+
+    .ring-label small {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      #hero { padding: 6rem 1.5rem 3rem; flex-direction: column; min-height: auto; gap: 3rem; }
+      .hero-stats { position: static; transform: none; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .progress-ring { display: none; }
+      section { padding: 4rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .journey-timeline { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">mai.py</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Available for opportunities
+    </div>
+    <h1 class="hero-name">Mai<br><span>Farahat</span></h1>
+    <p class="hero-title">Python Developer &amp; <span class="typing-text" id="typewriter">Engineer</span></p>
+    <p class="hero-desc">
+      4th-year Computer Engineering student building real-world Python applications — from games and web apps to automation bots and data science tools. 82+ days deep into the craft.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        View Projects
+      </a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-card">
+      <span class="stat-number">82+</span>
+      <span class="stat-label">Days Complete</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">50+</span>
+      <span class="stat-label">Projects Built</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">4<sup style="font-size:0.6em">th</sup></span>
+      <span class="stat-label">Year CS/CE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-tag">// 01</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">About Me</h2>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>Hi! I'm <strong>Mai</strong>, a fourth-year Computer Engineering student with a deep passion for Python. I'm working through the <strong>100 Days of Code</strong> challenge by Dr. Angela Yu — not just to learn syntax, but to build things that matter.</p>
+      <p>My journey spans from building classic games with <strong>Turtle graphics</strong>, to crafting REST APIs with <strong>Flask</strong>, automating workflows with <strong>Selenium</strong>, and exploring <strong>data science</strong> with Pandas and NumPy.</p>
+      <p>I'm aiming for a career in <strong>data science &amp; software development</strong>, and every project I build is a step toward that goal.</p>
+      <div class="about-skills">
+        <span class="skill-tag">Python 3</span>
+        <span class="skill-tag">Flask</span>
+        <span class="skill-tag">Selenium</span>
+        <span class="skill-tag">Pandas</span>
+        <span class="skill-tag">NumPy</span>
+        <span class="skill-tag">SQLAlchemy</span>
+        <span class="skill-tag">BeautifulSoup</span>
+        <span class="skill-tag">Tkinter</span>
+        <span class="skill-tag">REST APIs</span>
+        <span class="skill-tag">Data Science</span>
+        <span class="skill-tag">OOP</span>
+        <span class="skill-tag">Git</span>
+      </div>
+    </div>
+
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <div class="terminal-dot" style="background:#ff5f57"></div>
+        <div class="terminal-dot" style="background:#ffc600"></div>
+        <div class="terminal-dot" style="background:#00d64f"></div>
+        <span style="color:var(--muted);font-size:0.75rem;margin-left:0.5rem;">mai_farahat.py</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-comment"># Who is Mai?</span><br>
+        <span class="t-key">developer</span> = {<br>
+        &nbsp;&nbsp;<span class="t-str">"name"</span>: <span class="t-val">"Mai Farahat"</span>,<br>
+        &nbsp;&nbsp;<span class="t-str">"location"</span>: <span class="t-val">"Egypt 🇪🇬"</span>,<br>
+        &nbsp;&nbsp;<span class="t-str">"education"</span>: <span class="t-val">"Computer Engineering"</span>,<br>
+        &nbsp;&nbsp;<span class="t-str">"year"</span>: <span class="t-num">4</span>,<br>
+        &nbsp;&nbsp;<span class="t-str">"days_coded"</span>: <span class="t-num">82</span>,<br>
+        &nbsp;&nbsp;<span class="t-str">"loves"</span>: [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-val">"automation"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-val">"data science"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-val">"building real apps"</span><br>
+        &nbsp;&nbsp;],<br>
+        &nbsp;&nbsp;<span class="t-str">"goal"</span>: <span class="t-val">"100 days & beyond"</span><br>
+        }<br><br>
+        <span class="t-prompt">>>> </span><span class="t-key">print</span>(<span class="t-str">"Let's build something great!"</span>)
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-tag">// 02</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">Projects</h2>
+  </div>
+
+  <!-- Games -->
+  <div class="category-label reveal"><span>🎮</span> Games & Simulations</div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🐍</span>
+        <span class="project-day">Day 20–21</span>
+      </div>
+      <h3 class="project-name">Snake Game</h3>
+      <p class="project-desc">Classic snake game rebuilt from scratch using Turtle graphics with collision detection, score tracking, and increasing difficulty.</p>
+      <div class="project-tags">
+        <span class="project-tag">Turtle</span>
+        <span class="project-tag">OOP</span>
+        <span class="project-tag">Game Logic</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🏓</span>
+        <span class="project-day">Day 22</span>
+      </div>
+      <h3 class="project-name">Pong Game</h3>
+      <p class="project-desc">Two-player Pong arcade game built with Turtle — paddles, ball physics, and score display implemented with clean OOP design.</p>
+      <div class="project-tags">
+        <span class="project-tag">Turtle</span>
+        <span class="project-tag">OOP</span>
+        <span class="project-tag">Collision</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🐢</span>
+        <span class="project-day">Day 23</span>
+      </div>
+      <h3 class="project-name">Turtle Crossing</h3>
+      <p class="project-desc">Frogger-style crossing game where a turtle must dodge moving cars with level progression and dynamic speed increases.</p>
+      <div class="project-tags">
+        <span class="project-tag">Turtle</span>
+        <span class="project-tag">Animation</span>
+        <span class="project-tag">Levels</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🃏</span>
+        <span class="project-day">Day 11</span>
+      </div>
+      <h3 class="project-name">Blackjack</h3>
+      <p class="project-desc">Console-based Blackjack card game with full game logic — ace handling, bust detection, and dealer AI.</p>
+      <div class="project-tags">
+        <span class="project-tag">Functions</span>
+        <span class="project-tag">Logic</span>
+        <span class="project-tag">Random</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Automation & APIs -->
+  <div class="category-label reveal"><span>🤖</span> Automation & APIs</div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">☁️</span>
+        <span class="project-day">Day 35</span>
+      </div>
+      <h3 class="project-name">Rain Alert Bot</h3>
+      <p class="project-desc">Automated weather checker that sends SMS alerts via Twilio when rain is forecast using the OpenWeatherMap API.</p>
+      <div class="project-tags">
+        <span class="project-tag">APIs</span>
+        <span class="project-tag">Twilio</span>
+        <span class="project-tag">Automation</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">📈</span>
+        <span class="project-day">Day 36</span>
+      </div>
+      <h3 class="project-name">Stock News Alert</h3>
+      <p class="project-desc">Monitors stock prices and sends news headlines via SMS when significant price movements are detected.</p>
+      <div class="project-tags">
+        <span class="project-tag">Stocks API</span>
+        <span class="project-tag">News API</span>
+        <span class="project-tag">SMS</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">✈️</span>
+        <span class="project-day">Day 39–40</span>
+      </div>
+      <h3 class="project-name">Flight Deal Finder</h3>
+      <p class="project-desc">Searches for cheap flights below a set price and alerts subscribers via SMS — powered by the Kiwi Tequila API and Google Sheets.</p>
+      <div class="project-tags">
+        <span class="project-tag">Flight API</span>
+        <span class="project-tag">Google Sheets</span>
+        <span class="project-tag">SMS Alerts</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">💪</span>
+        <span class="project-day">Day 38</span>
+      </div>
+      <h3 class="project-name">Workout Tracker</h3>
+      <p class="project-desc">Logs workouts via natural language using the Nutritionix API, then saves data automatically to a Google Sheets spreadsheet.</p>
+      <div class="project-tags">
+        <span class="project-tag">NLP API</span>
+        <span class="project-tag">Google Sheets</span>
+        <span class="project-tag">Health</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Dev & Flask -->
+  <div class="category-label reveal"><span>🌐</span> Web Development (Flask)</div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">☕</span>
+        <span class="project-day">Day 62</span>
+      </div>
+      <h3 class="project-name">Café & WiFi Tracker</h3>
+      <p class="project-desc">Flask web app with WTForms that lets users submit and browse cafés with WiFi ratings, power outlets, and coffee quality scores.</p>
+      <div class="project-tags">
+        <span class="project-tag">Flask</span>
+        <span class="project-tag">WTForms</span>
+        <span class="project-tag">CSV</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🔐</span>
+        <span class="project-day">Day 68–69</span>
+      </div>
+      <h3 class="project-name">Flask Auth Blog</h3>
+      <p class="project-desc">Multi-user blog with full authentication — user registration, login, hashed passwords, admin-only routes, and SQLAlchemy database.</p>
+      <div class="project-tags">
+        <span class="project-tag">Flask</span>
+        <span class="project-tag">SQLAlchemy</span>
+        <span class="project-tag">Auth</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🎬</span>
+        <span class="project-day">Day 64</span>
+      </div>
+      <h3 class="project-name">Top Movies App</h3>
+      <p class="project-desc">Flask app that lets users rank their favourite movies, pulls data from the TMDB API, and stores rankings in a SQLite database.</p>
+      <div class="project-tags">
+        <span class="project-tag">Flask</span>
+        <span class="project-tag">TMDB API</span>
+        <span class="project-tag">SQLite</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🧋</span>
+        <span class="project-day">Day 66</span>
+      </div>
+      <h3 class="project-name">Café REST API</h3>
+      <p class="project-desc">RESTful API built with Flask for café data — full CRUD operations with GET, POST, PATCH, and DELETE endpoints.</p>
+      <div class="project-tags">
+        <span class="project-tag">REST API</span>
+        <span class="project-tag">Flask</span>
+        <span class="project-tag">CRUD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUI & Desktop -->
+  <div class="category-label reveal"><span>🖥️</span> GUI & Desktop Apps</div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">⏱️</span>
+        <span class="project-day">Day 28</span>
+      </div>
+      <h3 class="project-name">Pomodoro Timer</h3>
+      <p class="project-desc">Desktop productivity timer using Tkinter with work/break cycles, visual countdown, and session tracking checkmarks.</p>
+      <div class="project-tags">
+        <span class="project-tag">Tkinter</span>
+        <span class="project-tag">GUI</span>
+        <span class="project-tag">Productivity</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🔑</span>
+        <span class="project-day">Day 29–31</span>
+      </div>
+      <h3 class="project-name">Password Manager</h3>
+      <p class="project-desc">GUI password manager that generates strong passwords, stores them securely in JSON, and retrieves with clipboard copy.</p>
+      <div class="project-tags">
+        <span class="project-tag">Tkinter</span>
+        <span class="project-tag">JSON</span>
+        <span class="project-tag">Security</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🗺️</span>
+        <span class="project-day">Day 25</span>
+      </div>
+      <h3 class="project-name">US States Game</h3>
+      <p class="project-desc">Geography quiz game using Turtle and Pandas — players guess all 50 US states on a map with a CSV-powered answer checker.</p>
+      <div class="project-tags">
+        <span class="project-tag">Turtle</span>
+        <span class="project-tag">Pandas</span>
+        <span class="project-tag">CSV</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🃏</span>
+        <span class="project-day">Day 31</span>
+      </div>
+      <h3 class="project-name">Flash Card App</h3>
+      <p class="project-desc">Language learning flashcard app with Tkinter — flips cards to reveal translations and tracks words to review.</p>
+      <div class="project-tags">
+        <span class="project-tag">Tkinter</span>
+        <span class="project-tag">Pandas</span>
+        <span class="project-tag">Learning</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Scraping -->
+  <div class="category-label reveal"><span>🕷️</span> Web Scraping & Automation</div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">💼</span>
+        <span class="project-day">Day 43</span>
+      </div>
+      <h3 class="project-name">LinkedIn Auto-Apply</h3>
+      <p class="project-desc">Selenium bot that automates LinkedIn job applications — fills forms, handles filters, and submits applications automatically.</p>
+      <div class="project-tags">
+        <span class="project-tag">Selenium</span>
+        <span class="project-tag">Automation</span>
+        <span class="project-tag">Bot</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🛒</span>
+        <span class="project-day">Day 41–42</span>
+      </div>
+      <h3 class="project-name">Amazon Price Tracker</h3>
+      <p class="project-desc">Scrapes Amazon product pages and sends price alerts when items drop below a target threshold using BeautifulSoup.</p>
+      <div class="project-tags">
+        <span class="project-tag">BeautifulSoup</span>
+        <span class="project-tag">Requests</span>
+        <span class="project-tag">SMTP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Science -->
+  <div class="category-label reveal"><span>📊</span> Data Science & Analysis</div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🧱</span>
+        <span class="project-day">Day 74</span>
+      </div>
+      <h3 class="project-name">LEGO Data Analysis</h3>
+      <p class="project-desc">Jupyter Notebook exploration of the LEGO dataset — analyzing trends, set sizes, and colour evolution across decades with Pandas.</p>
+      <div class="project-tags">
+        <span class="project-tag">Pandas</span>
+        <span class="project-tag">Jupyter</span>
+        <span class="project-tag">Data Viz</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🏥</span>
+        <span class="project-day">Day 80</span>
+      </div>
+      <h3 class="project-name">Dr. Semmelweis Analysis</h3>
+      <p class="project-desc">Historical data analysis recreating Semmelweis's handwashing discovery — statistical analysis and visualization with Matplotlib.</p>
+      <div class="project-tags">
+        <span class="project-tag">NumPy</span>
+        <span class="project-tag">Matplotlib</span>
+        <span class="project-tag">Statistics</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">🏆</span>
+        <span class="project-day">Day 79</span>
+      </div>
+      <h3 class="project-name">Nobel Prize Analysis</h3>
+      <p class="project-desc">Comprehensive EDA on Nobel Prize data — who wins, when, and from where? Built with Seaborn and Plotly for interactive charts.</p>
+      <div class="project-tags">
+        <span class="project-tag">Seaborn</span>
+        <span class="project-tag">Plotly</span>
+        <span class="project-tag">EDA</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-icon">📱</span>
+        <span class="project-day">Day 76</span>
+      </div>
+      <h3 class="project-name">Google Play Store EDA</h3>
+      <p class="project-desc">Data analysis of Play Store apps — ratings distribution, category trends, and correlation analysis with 10K+ app records.</p>
+      <div class="project-tags">
+        <span class="project-tag">Pandas</span>
+        <span class="project-tag">Matplotlib</span>
+        <span class="project-tag">EDA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-tag">// 03</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">Skills</h2>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-category reveal">
+      <div class="skill-category-title"><span class="skill-icon">🐍</span> Python Core</div>
+      <div class="skill-item"><span class="skill-name">Python 3</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:95%;animation-delay:0.1s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">OOP</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:88%;animation-delay:0.2s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">File I/O & JSON</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:90%;animation-delay:0.3s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Error Handling</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:85%;animation-delay:0.4s"></div></div></div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-category-title"><span class="skill-icon">🌐</span> Web Development</div>
+      <div class="skill-item"><span class="skill-name">Flask</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:82%;animation-delay:0.1s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">REST APIs</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;animation-delay:0.2s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">SQLAlchemy</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%;animation-delay:0.3s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">WTForms</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:72%;animation-delay:0.4s"></div></div></div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-category-title"><span class="skill-icon">📊</span> Data Science</div>
+      <div class="skill-item"><span class="skill-name">Pandas</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;animation-delay:0.1s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">NumPy</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%;animation-delay:0.2s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Matplotlib</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:72%;animation-delay:0.3s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Seaborn</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:68%;animation-delay:0.4s"></div></div></div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-category-title"><span class="skill-icon">🤖</span> Automation</div>
+      <div class="skill-item"><span class="skill-name">Selenium</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:78%;animation-delay:0.1s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">BeautifulSoup</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;animation-delay:0.2s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Requests</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:88%;animation-delay:0.3s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">API Integration</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:83%;animation-delay:0.4s"></div></div></div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-category-title"><span class="skill-icon">🖥️</span> GUI & Graphics</div>
+      <div class="skill-item"><span class="skill-name">Tkinter</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%;animation-delay:0.1s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Turtle Graphics</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:85%;animation-delay:0.2s"></div></div></div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-category-title"><span class="skill-icon">🛠️</span> Tools & Workflow</div>
+      <div class="skill-item"><span class="skill-name">Git & GitHub</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;animation-delay:0.1s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Jupyter Notebook</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:82%;animation-delay:0.2s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">PyCharm / VSCode</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:85%;animation-delay:0.3s"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Vercel Deploy</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:70%;animation-delay:0.4s"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section id="journey">
+  <div class="section-header reveal">
+    <span class="section-tag">// 04</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">My Journey</h2>
+  </div>
+
+  <div class="journey-timeline">
+    <div class="journey-card reveal">
+      <div class="journey-icon" style="background:rgba(0,229,160,0.1);">🌱</div>
+      <div>
+        <div class="journey-title">Days 1–15: Foundations</div>
+        <div class="journey-desc">Variables, loops, functions, and data structures. Built Hangman, Caesar Cipher, Rock Paper Scissors, and more. Python clicked fast.</div>
+      </div>
+    </div>
+
+    <div class="journey-card reveal">
+      <div class="journey-icon" style="background:rgba(0,179,255,0.1);">🎮</div>
+      <div>
+        <div class="journey-title">Days 16–27: OOP & Graphics</div>
+        <div class="journey-desc">Dived into Object-Oriented Programming, built Snake, Pong, and Turtle Crossing. Started consuming APIs and working with external data.</div>
+      </div>
+    </div>
+
+    <div class="journey-card reveal">
+      <div class="journey-icon" style="background:rgba(255,107,107,0.1);">🖥️</div>
+      <div>
+        <div class="journey-title">Days 28–40: GUI & Automation</div>
+        <div class="journey-desc">Built desktop apps with Tkinter, automated workflows, and integrated multiple external APIs — Twilio, OpenWeather, Google Sheets.</div>
+      </div>
+    </div>
+
+    <div class="journey-card reveal">
+      <div class="journey-icon" style="background:rgba(255,198,0,0.1);">🕷️</div>
+      <div>
+        <div class="journey-title">Days 41–54: Web Scraping</div>
+        <div class="journey-desc">Mastered BeautifulSoup and Selenium for web automation. Built bots for Amazon price tracking, LinkedIn applications, and more.</div>
+      </div>
+    </div>
+
+    <div class="journey-card reveal">
+      <div class="journey-icon" style="background:rgba(0,229,160,0.1);">🌐</div>
+      <div>
+        <div class="journey-title">Days 55–72: Flask & Backend</div>
+        <div class="journey-desc">Built full web applications — REST APIs, user authentication, database integration with SQLAlchemy, and deployment to Vercel.</div>
+      </div>
+    </div>
+
+    <div class="journey-card reveal">
+      <div class="journey-icon" style="background:rgba(180,100,255,0.1);">📊</div>
+      <div>
+        <div class="journey-title">Days 73–82+: Data Science</div>
+        <div class="journey-desc">Now exploring Pandas, NumPy, Matplotlib, and Seaborn. Analysing real-world datasets — LEGO, Nobel Prize, Google Play Store, and more.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-header reveal" style="justify-content:center; text-align:center; flex-direction:column; gap:0.5rem;">
+      <span class="section-tag">// 05</span>
+      <h2 class="section-title reveal">Let's Connect</h2>
+    </div>
+    <p class="contact-sub reveal">I'm always open to new opportunities, collaborations, or just a chat about Python and data science. Feel free to reach out!</p>
+    <div class="contact-links reveal">
+      <a href="https://github.com/Mai-farahat" target="_blank" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="mailto:mai@example.com" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Me
+      </a>
+      <a href="https://github.com/Mai-farahat/100-days-of-code-python-bootcamp" target="_blank" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        100 Days Repo
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 <span class="footer-tag">Mai Farahat</span> — Built with Python 💚 HTML</span>
+  <span style="font-size:0.7rem;"><span class="footer-tag">82</span> / 100 days complete &amp; counting…</span>
+</footer>
+
+<script>
+  // Typewriter effect
+  const words = ['Engineer', 'Data Scientist', 'Automation Builder', 'Flask Developer', 'Problem Solver'];
+  let wi = 0, ci = 0, deleting = false;
+  const el = document.getElementById('typewriter');
+
+  function type() {
+    const word = words[wi];
+    if (!deleting) {
+      el.textContent = word.slice(0, ci + 1);
+      ci++;
+      if (ci === word.length) { deleting = true; setTimeout(type, 1800); return; }
+    } else {
+      el.textContent = word.slice(0, ci - 1);
+      ci--;
+      if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
+    }
+    setTimeout(type, deleting ? 60 : 95);
+  }
+  setTimeout(type, 800);
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
