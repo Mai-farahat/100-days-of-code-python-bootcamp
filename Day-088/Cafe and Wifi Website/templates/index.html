@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Café Desk — Work better in London</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #f5f0e8;
+      --espresso:#1a0f00;
+      --latte:   #c8a97e;
+      --foam:    #ede8df;
+      --steam:   #8b7355;
+      --green:   #2d6a4f;
+      --red:     #c1440e;
+      --card-bg: #faf7f2;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--espresso);
+      min-height: 100vh;
+    }
+
+    /* ── Hero ─────────────────────────────── */
+    .hero {
+      background: var(--espresso);
+      color: var(--cream);
+      padding: 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(200,169,126,.18) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a97e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 3.5rem 0 4rem;
+    }
+
+    .hero-text { flex: 1; }
+
+    .hero-eyebrow {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--latte);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 1.08;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--latte);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      opacity: .75;
+      max-width: 44ch;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: var(--latte);
+      display: block;
+    }
+    .stat-label {
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .55;
+    }
+
+    .hero-visual {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      align-items: flex-end;
+    }
+
+    .hero-badge {
+      background: rgba(200,169,126,.12);
+      border: 1px solid rgba(200,169,126,.25);
+      border-radius: 100px;
+      padding: .45rem 1rem;
+      font-size: .75rem;
+      letter-spacing: .06em;
+      color: var(--latte);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      white-space: nowrap;
+    }
+
+    .hero-badge span { font-size: .9rem; }
+
+    /* ── Nav strip ────────────────────────── */
+    .topbar {
+      border-bottom: 1px solid rgba(200,169,126,.15);
+      padding: 1rem 2rem;
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--cream);
+      letter-spacing: .02em;
+    }
+    .logo em { color: var(--latte); font-style: italic; }
+
+    .nav-add {
+      background: var(--latte);
+      color: var(--espresso);
+      border: none;
+      padding: .5rem 1.2rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: background .2s, transform .15s;
+    }
+    .nav-add:hover { background: #d4b48a; transform: translateY(-1px); }
+
+    /* ── Filters ──────────────────────────── */
+    .filters-section {
+      background: var(--foam);
+      border-bottom: 1px solid #e4ddd2;
+      padding: 1.4rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .filters-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--steam);
+      margin-right: .2rem;
+    }
+
+    .filter-select {
+      appearance: none;
+      background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b7355'/%3E%3C/svg%3E") no-repeat right .8rem center;
+      border: 1.5px solid #d4cec5;
+      border-radius: 8px;
+      padding: .5rem 2.2rem .5rem .85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      color: var(--espresso);
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .filter-select:focus { outline: none; border-color: var(--latte); }
+
+    .filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      background: white;
+      border: 1.5px solid #d4cec5;
+      border-radius: 8px;
+      padding: .45rem .9rem;
+      font-size: .82rem;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--steam);
+      transition: all .2s;
+      user-select: none;
+    }
+    .filter-toggle.active {
+      background: var(--espresso);
+      border-color: var(--espresso);
+      color: var(--cream);
+    }
+    .filter-toggle .icon { font-size: 1rem; }
+
+    .results-count {
+      margin-left: auto;
+      font-size: .8rem;
+      color: var(--steam);
+      font-weight: 500;
+    }
+
+    /* ── Grid ─────────────────────────────── */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+    }
+
+    .cafe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.6rem;
+    }
+
+    /* ── Card ─────────────────────────────── */
+    .cafe-card {
+      background: var(--card-bg);
+      border: 1px solid #e8e2d8;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .22s ease, box-shadow .22s ease;
+      position: relative;
+      animation: fadeUp .4s ease both;
+    }
+    .cafe-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(26,15,0,.12);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cafe-img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+      background: #e8e2d8;
+    }
+
+    .cafe-img-placeholder {
+      width: 100%;
+      height: 190px;
+      background: linear-gradient(135deg, #e8e2d8 0%, #d4cec5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .cafe-body {
+      padding: 1.2rem 1.3rem 1rem;
+    }
+
+    .cafe-location {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--latte);
+      margin-bottom: .35rem;
+    }
+
+    .cafe-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      line-height: 1.25;
+      margin-bottom: .9rem;
+    }
+
+    .cafe-amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: 1rem;
+    }
+
+    .amenity {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      font-size: .72rem;
+      font-weight: 500;
+      padding: .25rem .65rem;
+      border-radius: 100px;
+      letter-spacing: .02em;
+    }
+    .amenity.yes {
+      background: rgba(45,106,79,.1);
+      color: var(--green);
+    }
+    .amenity.no {
+      background: rgba(193,68,14,.07);
+      color: #b03a0a;
+      text-decoration: line-through;
+      opacity: .6;
+    }
+
+    .cafe-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: .85rem;
+      border-top: 1px solid #ede7dc;
+    }
+
+    .cafe-meta {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .meta-item {
+      font-size: .76rem;
+      color: var(--steam);
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .cafe-actions {
+      display: flex;
+      gap: .5rem;
+    }
+
+    .btn-map {
+      background: var(--espresso);
+      color: var(--cream);
+      border: none;
+      border-radius: 8px;
+      padding: .4rem .85rem;
+      font-size: .75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      transition: background .2s;
+    }
+    .btn-map:hover { background: #2e1a00; }
+
+    .btn-delete {
+      background: transparent;
+      border: 1.5px solid #e2d9cc;
+      border-radius: 8px;
+      padding: .38rem .6rem;
+      cursor: pointer;
+      font-size: .82rem;
+      color: #b03a0a;
+      transition: all .2s;
+      line-height: 1;
+    }
+    .btn-delete:hover {
+      background: rgba(193,68,14,.08);
+      border-color: #c1440e;
+    }
+
+    /* ── Empty state ──────────────────────── */
+    .empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--steam);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty h3 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; margin-bottom: .5rem; color: var(--espresso); }
+    .empty p { font-size: .9rem; }
+
+    /* ── Loading ──────────────────────────── */
+    .loading {
+      grid-column: 1/-1;
+      display: flex;
+      justify-content: center;
+      padding: 4rem;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #e8e2d8;
+      border-top-color: var(--latte);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Modal ────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(26,15,0,.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px) scale(.97);
+      transition: transform .25s;
+    }
+    .modal-overlay.open .modal { transform: none; }
+
+    .modal-header {
+      padding: 1.8rem 2rem 1rem;
+      border-bottom: 1px solid #ede7dc;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .modal-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+    }
+    .modal-subtitle { font-size: .82rem; color: var(--steam); margin-top: .2rem; }
+    .modal-close {
+      background: none; border: none; cursor: pointer; font-size: 1.3rem;
+      color: var(--steam); padding: .2rem; line-height: 1;
+      transition: color .2s;
+    }
+    .modal-close:hover { color: var(--espresso); }
+
+    .modal-body { padding: 1.5rem 2rem 2rem; }
+
+    .form-row { margin-bottom: 1.1rem; }
+    .form-row label {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--steam);
+      margin-bottom: .4rem;
+    }
+    .form-row input, .form-row select {
+      width: 100%;
+      border: 1.5px solid #d4cec5;
+      border-radius: 10px;
+      padding: .65rem .9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      color: var(--espresso);
+      background: white;
+      transition: border-color .2s;
+    }
+    .form-row input:focus, .form-row select:focus {
+      outline: none;
+      border-color: var(--latte);
+    }
+
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: white;
+      border: 1.5px solid #d4cec5;
+      border-radius: 10px;
+      padding: .6rem .9rem;
+      cursor: pointer;
+      transition: all .2s;
+      font-size: .83rem;
+      font-weight: 500;
+    }
+    .toggle-item input[type=checkbox] { accent-color: var(--green); width: 16px; height: 16px; }
+    .toggle-item:has(input:checked) {
+      border-color: var(--green);
+      background: rgba(45,106,79,.06);
+      color: var(--green);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--espresso);
+      color: var(--cream);
+      border: none;
+      border-radius: 12px;
+      padding: .9rem;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      cursor: pointer;
+      margin-top: .5rem;
+      transition: background .2s, transform .15s;
+    }
+    .btn-submit:hover { background: #2e1a00; transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .form-msg {
+      text-align: center;
+      font-size: .83rem;
+      margin-top: .8rem;
+      min-height: 1.2em;
+    }
+    .form-msg.success { color: var(--green); }
+    .form-msg.error   { color: var(--red); }
+
+    /* ── Toast ────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--espresso);
+      color: var(--cream);
+      padding: .8rem 1.4rem;
+      border-radius: 12px;
+      font-size: .85rem;
+      font-weight: 500;
+      z-index: 200;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,.25);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid var(--green); }
+    .toast.error   { border-left: 4px solid var(--red); }
+
+    @media (max-width: 640px) {
+      .hero-visual { display: none; }
+      .hero h1 { font-size: 2.4rem; }
+      .hero-stats { gap: 1.5rem; }
+      .filters-inner { gap: .7rem; }
+      .cafe-grid { grid-template-columns: 1fr; }
+      .form-row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">Café<em>Desk</em></div>
+      <button class="nav-add" onclick="openModal()">+ Add a Café</button>
+    </div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="hero-eyebrow">London's remote work guide</p>
+      <h1>Find your perfect<br><em>work café</em></h1>
+      <p class="hero-sub">Curated spots with fast WiFi, power sockets, and great coffee — across London's best neighbourhoods.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num" id="total-count">—</span>
+          <span class="stat-label">Cafés listed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="wifi-count">—</span>
+          <span class="stat-label">With WiFi</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="socket-count">—</span>
+          <span class="stat-label">With sockets</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-badge"><span>☕</span> Freshly brewed data</div>
+      <div class="hero-badge"><span>⚡</span> Power sockets verified</div>
+      <div class="hero-badge"><span>📶</span> WiFi confirmed</div>
+      <div class="hero-badge"><span>📞</span> Call-friendly spots</div>
+    </div>
+  </div>
+</section>
+
+<!-- Filters -->
+<div class="filters-section">
+  <div class="filters-inner">
+    <span class="filter-label">Filter</span>
+
+    <select class="filter-select" id="filter-location">
+      <option value="">All Neighbourhoods</option>
+    </select>
+
+    <button class="filter-toggle" id="toggle-wifi" onclick="toggleFilter('wifi')">
+      <span class="icon">📶</span> WiFi
+    </button>
+
+    <button class="filter-toggle" id="toggle-sockets" onclick="toggleFilter('sockets')">
+      <span class="icon">🔌</span> Power Sockets
+    </button>
+
+    <button class="filter-toggle" id="toggle-calls" onclick="toggleFilter('calls')">
+      <span class="icon">📞</span> Call-Friendly
+    </button>
+
+    <span class="results-count" id="results-count"></span>
+  </div>
+</div>
+
+<!-- Main Grid -->
+<main class="main">
+  <div class="cafe-grid" id="cafe-grid">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+</main>
+
+<!-- Add Café Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Add a New Café</div>
+        <div class="modal-subtitle">Know a great spot? Share it with the community.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>Café Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Monmouth Coffee" />
+      </div>
+      <div class="form-row">
+        <label>Neighbourhood / Location *</label>
+        <input type="text" id="f-location" placeholder="e.g. Shoreditch" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-row">
+          <label>Google Maps URL *</label>
+          <input type="url" id="f-map" placeholder="https://goo.gl/maps/..." />
+        </div>
+        <div class="form-row">
+          <label>Photo URL</label>
+          <input type="url" id="f-img" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-row">
+          <label>Seats</label>
+          <select id="f-seats">
+            <option value="">Unknown</option>
+            <option>0-10</option>
+            <option>10-20</option>
+            <option>20-30</option>
+            <option>30-40</option>
+            <option>50+</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Coffee Price</label>
+          <input type="text" id="f-price" placeholder="e.g. £3.00" />
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Amenities</label>
+        <div class="toggle-group">
+          <label class="toggle-item"><input type="checkbox" id="f-wifi" /> 📶 WiFi</label>
+          <label class="toggle-item"><input type="checkbox" id="f-sockets" /> 🔌 Power Sockets</label>
+          <label class="toggle-item"><input type="checkbox" id="f-toilet" /> 🚻 Toilet</label>
+          <label class="toggle-item"><input type="checkbox" id="f-calls" /> 📞 Call-Friendly</label>
+        </div>
+      </div>
+      <button class="btn-submit" id="submit-btn" onclick="submitCafe()">Add this Café ☕</button>
+      <div class="form-msg" id="form-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const state = {
+    wifi: false,
+    sockets: false,
+    calls: false,
+    allCafes: [],
+  };
+
+  async function loadLocations() {
+    const res = await fetch('/api/locations');
+    const locs = await res.json();
+    const sel = document.getElementById('filter-location');
+    locs.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l; opt.textContent = l;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', loadCafes);
+  }
+
+  async function loadCafes() {
+    const location = document.getElementById('filter-location').value;
+    const params = new URLSearchParams({ location });
+    if (state.wifi)    params.set('wifi', '1');
+    if (state.sockets) params.set('sockets', '1');
+
+    const res = await fetch('/api/cafes?' + params);
+    let cafes = await res.json();
+
+    if (state.calls) cafes = cafes.filter(c => c.can_take_calls);
+
+    state.allCafes = cafes;
+    renderCafes(cafes);
+    updateStats();
+  }
+
+  function renderCafes(cafes) {
+    const grid = document.getElementById('cafe-grid');
+    document.getElementById('results-count').textContent =
+      cafes.length === 1 ? '1 café' : `${cafes.length} cafés`;
+
+    if (!cafes.length) {
+      grid.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">☕</div>
+          <h3>No cafés found</h3>
+          <p>Try adjusting your filters or add one yourself!</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = cafes.map((c, i) => `
+      <div class="cafe-card" style="animation-delay:${i * 0.04}s">
+        ${c.img_url
+          ? `<img class="cafe-img" src="${escHtml(c.img_url)}" alt="${escHtml(c.name)}" loading="lazy" onerror="this.replaceWith(placeholder())">`
+          : `<div class="cafe-img-placeholder">☕</div>`}
+        <div class="cafe-body">
+          <div class="cafe-location">${escHtml(c.location)}</div>
+          <div class="cafe-name">${escHtml(c.name)}</div>
+          <div class="cafe-amenities">
+            ${amenityBadge(c.has_wifi,       '📶', 'WiFi')}
+            ${amenityBadge(c.has_sockets,    '🔌', 'Sockets')}
+            ${amenityBadge(c.has_toilet,     '🚻', 'Toilet')}
+            ${amenityBadge(c.can_take_calls, '📞', 'Calls OK')}
+          </div>
+          <div class="cafe-footer">
+            <div class="cafe-meta">
+              ${c.seats        ? `<span class="meta-item">🪑 ${escHtml(c.seats)} seats</span>` : ''}
+              ${c.coffee_price ? `<span class="meta-item">☕ ${escHtml(c.coffee_price)}</span>` : ''}
+            </div>
+            <div class="cafe-actions">
+              <button class="btn-delete" title="Remove café" onclick="deleteCafe(${c.id}, this)">🗑</button>
+              <a class="btn-map" href="${escHtml(c.map_url)}" target="_blank" rel="noopener">
+                Map →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function amenityBadge(val, icon, label) {
+    const cls = val ? 'yes' : 'no';
+    return `<span class="amenity ${cls}">${icon} ${label}</span>`;
+  }
+
+  function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function placeholder() {
+    const d = document.createElement('div');
+    d.className = 'cafe-img-placeholder';
+    d.textContent = '☕';
+    return d;
+  }
+
+  async function updateStats() {
+    const res  = await fetch('/api/cafes');
+    const all  = await res.json();
+    document.getElementById('total-count').textContent  = all.length;
+    document.getElementById('wifi-count').textContent   = all.filter(c => c.has_wifi).length;
+    document.getElementById('socket-count').textContent = all.filter(c => c.has_sockets).length;
+  }
+
+  function toggleFilter(type) {
+    state[type] = !state[type];
+    const el = document.getElementById(`toggle-${type}`);
+    el.classList.toggle('active', state[type]);
+    loadCafes();
+  }
+
+  async function deleteCafe(id, btn) {
+    if (!confirm('Remove this café from the list?')) return;
+    btn.disabled = true;
+    const res = await fetch(`/api/cafes/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      showToast('Café removed ✓', 'success');
+      loadCafes();
+      updateStats();
+    } else {
+      showToast('Could not delete café', 'error');
+      btn.disabled = false;
+    }
+  }
+
+  // ── Modal ──
+  function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); clearForm(); }
+  function handleOverlayClick(e) { if (e.target === e.currentTarget) closeModal(); }
+
+  async function submitCafe() {
+    const name     = document.getElementById('f-name').value.trim();
+    const location = document.getElementById('f-location').value.trim();
+    const map_url  = document.getElementById('f-map').value.trim();
+    const img_url  = document.getElementById('f-img').value.trim();
+
+    if (!name || !location || !map_url) {
+      setFormMsg('Please fill in Name, Location and Map URL.', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+
+    const res = await fetch('/api/cafes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, location, map_url,
+        img_url: img_url || '',
+        seats:   document.getElementById('f-seats').value,
+        coffee_price: document.getElementById('f-price').value.trim(),
+        has_wifi:       document.getElementById('f-wifi').checked    ? 1 : 0,
+        has_sockets:    document.getElementById('f-sockets').checked ? 1 : 0,
+        has_toilet:     document.getElementById('f-toilet').checked  ? 1 : 0,
+        can_take_calls: document.getElementById('f-calls').checked   ? 1 : 0,
+      })
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Add this Café ☕';
+
+    if (res.ok) {
+      closeModal();
+      showToast(`${name} added! ☕`, 'success');
+      loadCafes();
+      updateStats();
+    } else {
+      setFormMsg('Something went wrong. Please try again.', 'error');
+    }
+  }
+
+  function clearForm() {
+    ['f-name','f-location','f-map','f-img','f-price'].forEach(id => document.getElementById(id).value = '');
+    ['f-wifi','f-sockets','f-toilet','f-calls'].forEach(id => document.getElementById(id).checked = false);
+    document.getElementById('f-seats').value = '';
+    setFormMsg('', '');
+  }
+
+  function setFormMsg(msg, type) {
+    const el = document.getElementById('form-msg');
+    el.textContent = msg;
+    el.className = `form-msg ${type}`;
+  }
+
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => { t.className = `toast ${type}`; }, 3000);
+  }
+
+  // ── Init ──
+  loadLocations();
+  loadCafes();
+</script>
+
+</body>
+</html>
