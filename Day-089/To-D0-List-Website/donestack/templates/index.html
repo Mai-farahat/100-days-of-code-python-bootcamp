@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DoneStack — Ship It.</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #141718;
+    --bg2:        #1a1d1f;
+    --surface:    #1f2326;
+    --surface2:   #252a2d;
+    --border:     rgba(255,255,255,0.07);
+    --border-md:  rgba(255,255,255,0.12);
+    --text:       #d4dbe3;
+    --text-mid:   #8a96a3;
+    --text-dim:   #576070;
+    --text-ghost: #373f4a;
+    --blue:       #7aa2d4;
+    --blue-bg:    rgba(122,162,212,0.1);
+    --amber:      #d4a84b;
+    --amber-bg:   rgba(212,168,75,0.1);
+    --green:      #6aab85;
+    --green-bg:   rgba(106,171,133,0.1);
+    --red:        #d47a7a;
+    --red-bg:     rgba(212,122,122,0.1);
+    --col-r: 14px;
+    --card-r: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.45), 0 4px 8px rgba(0,0,0,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Nunito Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+  header { display:flex; align-items:center; justify-content:space-between; padding:16px 36px; background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; box-shadow:var(--shadow-sm); }
+  .logo { display:flex; align-items:center; gap:11px; }
+  .logo-icon { width:34px; height:34px; background:var(--blue-bg); border-radius:9px; border:1px solid rgba(122,162,212,0.25); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:4px; padding:8px 9px; }
+  .logo-icon span { display:block; height:2.5px; border-radius:2px; background:var(--blue); }
+  .logo-icon span:nth-child(1){width:100%;} .logo-icon span:nth-child(2){width:68%;} .logo-icon span:nth-child(3){width:82%;}
+  .logo-name { font-family:'Nunito',sans-serif; font-size:19px; font-weight:700; color:var(--text); letter-spacing:-0.3px; line-height:1; }
+  .logo-name span { color:var(--blue); }
+  .logo-sub { font-size:10.5px; color:var(--text-dim); letter-spacing:0.3px; margin-top:2px; }
+  .header-mid { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); background:var(--surface2); border:1px solid var(--border); padding:5px 13px; border-radius:20px; }
+  .header-mid b { color:var(--text-mid); font-weight:400; }
+  .header-right { display:flex; align-items:center; gap:10px; }
+  .header-date { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-dim); padding:5px 12px; border:1px solid var(--border); border-radius:20px; background:var(--surface2); }
+  .btn-new { display:flex; align-items:center; gap:7px; background:var(--blue); color:#fff; border:none; padding:9px 18px; border-radius:8px; font-family:'Nunito Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.18s; box-shadow:0 2px 8px rgba(107,143,201,0.3); }
+  .btn-new:hover { background:#5a7fb8; transform:translateY(-1px); box-shadow:0 4px 14px rgba(107,143,201,0.35); }
+
+  .stats-bar { display:flex; align-items:center; padding:10px 36px; background:var(--surface); border-bottom:1px solid var(--border); }
+  .stat { display:flex; align-items:center; gap:9px; padding-right:22px; margin-right:22px; border-right:1px solid var(--border); font-size:11px; color:var(--text-dim); }
+  .stat:last-of-type { border-right:none; }
+  .stat-num { font-family:'Nunito',sans-serif; font-size:20px; font-weight:700; line-height:1; color:var(--text); }
+  .stat-pill { width:9px; height:9px; border-radius:3px; flex-shrink:0; }
+  .progress-group { margin-left:auto; display:flex; align-items:center; gap:10px; }
+  .progress-label-txt { font-size:11px; color:var(--text-dim); }
+  .progress-bar { width:110px; height:6px; background:var(--bg2); border-radius:4px; overflow:hidden; border:1px solid var(--border); }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--green),#72b890); border-radius:4px; transition:width 0.5s; }
+  .progress-pct { font-family:'Nunito',sans-serif; font-size:14px; font-weight:700; color:var(--green); min-width:34px; }
+
+  .board-wrapper { padding:28px 36px 52px; overflow-x:auto; }
+  .board { display:flex; gap:18px; min-width:fit-content; align-items:flex-start; }
+
+  .column { width:298px; flex-shrink:0; background:var(--surface); border:1px solid var(--border); border-radius:var(--col-r); overflow:hidden; box-shadow:var(--shadow-sm); transition:border-color 0.2s,box-shadow 0.2s; }
+  .column.drag-over { border-color:var(--blue); box-shadow:0 0 0 3px rgba(107,143,201,0.12); }
+  .column[data-col="todo"]  { border-top:3px solid var(--blue); }
+  .column[data-col="doing"] { border-top:3px solid var(--amber); }
+  .column[data-col="done"]  { border-top:3px solid var(--green); }
+  .column-header { padding:14px 16px 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .col-title-row { display:flex; align-items:center; gap:8px; }
+  .col-dot { width:9px; height:9px; border-radius:3px; flex-shrink:0; }
+  .column[data-col="todo"]  .col-dot { background:var(--blue); }
+  .column[data-col="doing"] .col-dot { background:var(--amber); }
+  .column[data-col="done"]  .col-dot { background:var(--green); }
+  .col-title { font-family:'Nunito',sans-serif; font-size:13.5px; font-weight:700; color:var(--text); }
+  .col-count { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-dim); background:var(--bg2); border:1px solid var(--border); padding:1px 7px; border-radius:10px; }
+  .col-add-btn { background:transparent; border:1px solid var(--border); color:var(--text-dim); cursor:pointer; padding:4px 9px; border-radius:6px; transition:all 0.15s; display:flex; align-items:center; gap:4px; font-family:'Nunito Sans',sans-serif; font-size:11px; font-weight:600; }
+  .col-add-btn:hover { background:var(--blue-bg); border-color:rgba(122,162,212,0.3); color:var(--blue); }
+
+  .cards { padding:10px; display:flex; flex-direction:column; gap:7px; min-height:80px; }
+  .card { background:var(--surface2); border:1px solid var(--border); border-radius:var(--card-r); padding:13px 14px; cursor:grab; transition:all 0.17s; animation:cardIn 0.22s ease; position:relative; box-shadow:var(--shadow-sm); }
+  @keyframes cardIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .card:hover { border-color:var(--border-md); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .card.dragging { opacity:0.4; cursor:grabbing; }
+  .column[data-col="done"] .card { opacity:0.75; }
+  .column[data-col="done"] .card-title { text-decoration:line-through; text-decoration-color:var(--text-ghost); color:var(--text-dim); }
+  .card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .card-tag { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.5px; padding:2px 8px; border-radius:5px; }
+  .tag-design  { background:rgba(160,120,220,0.12); color:#b894e8; border:1px solid rgba(160,120,220,0.2); }
+  .tag-dev     { background:var(--blue-bg); color:var(--blue); border:1px solid rgba(122,162,212,0.2); }
+  .tag-review  { background:var(--amber-bg); color:var(--amber); border:1px solid rgba(212,168,75,0.2); }
+  .tag-bug     { background:var(--red-bg); color:var(--red); border:1px solid rgba(212,122,122,0.2); }
+  .tag-feature { background:var(--green-bg); color:var(--green); border:1px solid rgba(106,171,133,0.2); }
+  .tag-docs    { background:rgba(80,180,180,0.1); color:#6abcbc; border:1px solid rgba(80,180,180,0.18); }
+  .tag-other   { background:var(--surface); color:var(--text-dim); border:1px solid var(--border); }
+  .priority-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .priority-high { background:#e08080; }
+  .priority-med  { background:#d4aa60; }
+  .priority-low  { background:var(--text-ghost); }
+  .card-title { font-size:13px; font-weight:500; line-height:1.5; color:var(--text); margin-bottom:9px; }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; }
+  .card-date { font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--text-ghost); }
+  .card-actions { display:flex; gap:3px; opacity:0; transition:opacity 0.13s; }
+  .card:hover .card-actions { opacity:1; }
+  .card-btn { background:transparent; border:1px solid transparent; cursor:pointer; color:var(--text-dim); padding:3px 5px; border-radius:5px; display:flex; align-items:center; transition:all 0.13s; }
+  .card-btn:hover { background:var(--bg2); border-color:var(--border); color:var(--text); }
+  .card-btn.del:hover { color:var(--red); background:var(--red-bg); border-color:rgba(212,122,122,0.2); }
+
+  .empty-state { padding:28px 12px; text-align:center; color:var(--text-ghost); font-size:12px; font-style:italic; display:none; }
+  .cards:empty ~ .empty-state, .cards.is-empty ~ .empty-state { display:block; }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+  .modal-overlay.open { opacity:1; pointer-events:all; }
+  .modal { background:var(--surface); border:1px solid var(--border-md); border-radius:16px; width:440px; max-width:95vw; padding:28px; transform:translateY(12px) scale(0.98); transition:transform 0.22s cubic-bezier(.34,1.4,.64,1); box-shadow:var(--shadow-lg); }
+  .modal-overlay.open .modal { transform:translateY(0) scale(1); }
+  .modal-title { font-family:'Nunito',sans-serif; font-size:19px; font-weight:700; margin-bottom:20px; color:var(--text); }
+  .modal-title span { color:var(--blue); }
+  label { display:block; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-mid); margin-bottom:6px; }
+  .form-group { margin-bottom:14px; }
+  input[type="text"], textarea, select { width:100%; background:var(--bg2); border:1px solid var(--border-md); border-radius:8px; padding:10px 13px; color:var(--text); font-family:'Nunito Sans',sans-serif; font-size:13.5px; outline:none; transition:border-color 0.15s,box-shadow 0.15s; -webkit-appearance:none; }
+  input[type="text"]:focus, textarea:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(122,162,212,0.12); }
+  textarea { resize:none; height:68px; line-height:1.6; }
+  select option { background:var(--surface); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .modal-actions { display:flex; gap:10px; margin-top:20px; }
+  .btn-cancel { flex:1; background:transparent; border:1px solid var(--border-md); color:var(--text-mid); padding:10px; border-radius:8px; font-family:'Nunito Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+  .btn-cancel:hover { background:var(--bg2); color:var(--text); }
+  .btn-create { flex:2; background:var(--blue); border:none; color:#fff; padding:10px; border-radius:8px; font-family:'Nunito Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.18s; box-shadow:0 2px 8px rgba(107,143,201,0.28); }
+  .btn-create:hover { background:#5a7fb8; }
+
+  .toast { position:fixed; bottom:28px; right:28px; background:var(--surface); border:1px solid var(--border-md); border-radius:10px; padding:11px 16px; font-size:12.5px; color:var(--text); box-shadow:var(--shadow-md); z-index:9000; transform:translateY(16px); opacity:0; transition:all 0.22s; display:flex; align-items:center; gap:9px; }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast-dot { width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+
+  ::-webkit-scrollbar{width:6px;height:6px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:4px} ::-webkit-scrollbar-thumb:hover{background:var(--text-ghost)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon"><span></span><span></span><span></span></div>
+    <div>
+      <div class="logo-name">Done<span>Stack</span></div>
+      <div class="logo-sub">Ship it. Stack it. Done.</div>
+    </div>
+  </div>
+  <div class="header-mid"><b>{{ total }} task{{ 's' if total != 1 }}</b> &nbsp;·&nbsp; your board</div>
+  <div class="header-right">
+    <span class="header-date">{{ today }}</span>
+    <button class="btn-new" onclick="openModal()">
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v9M1 5.5h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      New Task
+    </button>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-pill" style="background:var(--blue)"></div>
+    <span class="stat-num" id="statTodo">{{ counts.todo }}</span>
+    <span>to do</span>
+  </div>
+  <div class="stat">
+    <div class="stat-pill" style="background:var(--amber)"></div>
+    <span class="stat-num" id="statDoing">{{ counts.doing }}</span>
+    <span>in progress</span>
+  </div>
+  <div class="stat">
+    <div class="stat-pill" style="background:var(--green)"></div>
+    <span class="stat-num" id="statDone">{{ counts.done }}</span>
+    <span>done</span>
+  </div>
+  <div class="progress-group">
+    <span class="progress-label-txt">completed</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:{{ pct }}%"></div></div>
+    <span class="progress-pct" id="progressLabel">{{ pct }}%</span>
+  </div>
+</div>
+
+<div class="board-wrapper">
+  <div class="board" id="board">
+    {% set columns = [('todo','To Do'), ('doing','In Progress'), ('done','Done')] %}
+    {% for col_id, col_label in columns %}
+    {% set col_tasks = tasks | selectattr('col','equalto', col_id) | list %}
+    <div class="column" data-col="{{ col_id }}">
+      <div class="column-header">
+        <div class="col-title-row">
+          <div class="col-dot"></div>
+          <span class="col-title">{{ col_label }}</span>
+          <span class="col-count" id="count-{{ col_id }}">{{ col_tasks | length }}</span>
+        </div>
+        <button class="col-add-btn" onclick="openModal('{{ col_id }}')">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Add
+        </button>
+      </div>
+      <div class="cards {% if not col_tasks %}is-empty{% endif %}" id="cards-{{ col_id }}"
+        ondragover="onDragOver(event,'{{ col_id }}')"
+        ondragleave="onDragLeave(event)"
+        ondrop="onDrop(event,'{{ col_id }}')">
+        {% for t in col_tasks %}
+        <div class="card" id="card-{{ t.id }}" draggable="true"
+          ondragstart="onDragStart(event,'{{ t.id }}')" ondragend="onDragEnd()">
+          <div class="card-top">
+            <span class="card-tag tag-{{ t.tag }}">{{ t.tag }}</span>
+            <span class="priority-dot priority-{{ t.priority }}" title="{{ t.priority }} priority"></span>
+          </div>
+          <div class="card-title">{{ t.title }}</div>
+          <div class="card-footer">
+            <span class="card-date">{{ t.created }}</span>
+            <div class="card-actions">
+              <button class="card-btn" onclick="moveTask('{{ t.id }}','left')" title="Move back">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="card-btn" onclick="moveTask('{{ t.id }}','right')" title="Move forward">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="card-btn del" onclick="deleteTask('{{ t.id }}')" title="Delete">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7h6.6L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="empty-state">Nothing here yet</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-title">New <span>Task</span></div>
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="inputTitle" placeholder="What needs to be done?" maxlength="100">
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="inputDesc" placeholder="Any extra context..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Column</label>
+        <select id="inputCol">
+          <option value="todo">To Do</option>
+          <option value="doing">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select id="inputPriority">
+          <option value="low">Low</option>
+          <option value="med">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Tag</label>
+      <select id="inputTag">
+        <option value="dev">Dev</option>
+        <option value="design">Design</option>
+        <option value="feature">Feature</option>
+        <option value="bug">Bug</option>
+        <option value="review">Review</option>
+        <option value="docs">Docs</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-create" onclick="createTask()">Create Task</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg">Task created</span>
+</div>
+
+<script>
+// ── State (synced with Flask API) ────────────────────────────────────────────
+let tasks = {{ tasks | tojson }};
+let dragId = null;
+const COL_ORDER = ['todo', 'doing', 'done'];
+const COL_LABELS = { todo: 'To Do', doing: 'In Progress', done: 'Done' };
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function cardHTML(t) {
+  return `
+    <div class="card" id="card-${t.id}" draggable="true"
+      ondragstart="onDragStart(event,'${t.id}')" ondragend="onDragEnd()">
+      <div class="card-top">
+        <span class="card-tag tag-${t.tag}">${t.tag}</span>
+        <span class="priority-dot priority-${t.priority}" title="${t.priority} priority"></span>
+      </div>
+      <div class="card-title">${escHtml(t.title)}</div>
+      <div class="card-footer">
+        <span class="card-date">${t.created}</span>
+        <div class="card-actions">
+          <button class="card-btn" onclick="moveTask('${t.id}','left')" title="Move back">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="card-btn" onclick="moveTask('${t.id}','right')" title="Move forward">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="card-btn del" onclick="deleteTask('${t.id}')" title="Delete">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7h6.6L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function refreshBoard() {
+  COL_ORDER.forEach(colId => {
+    const container = document.getElementById('cards-' + colId);
+    const colTasks = tasks.filter(t => t.col === colId);
+    container.innerHTML = colTasks.map(cardHTML).join('');
+    container.classList.toggle('is-empty', colTasks.length === 0);
+    document.getElementById('count-' + colId).textContent = colTasks.length;
+  });
+  refreshStats();
+}
+
+function refreshStats() {
+  const counts = { todo:0, doing:0, done:0 };
+  tasks.forEach(t => counts[t.col]++);
+  document.getElementById('statTodo').textContent  = counts.todo;
+  document.getElementById('statDoing').textContent = counts.doing;
+  document.getElementById('statDone').textContent  = counts.done;
+  const total = tasks.length;
+  const pct = total === 0 ? 0 : Math.round((counts.done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '%';
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── API Calls ─────────────────────────────────────────────────────────────────
+async function apiPatch(id, data) {
+  const res = await fetch(`/api/tasks/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+async function apiDelete(id) {
+  await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+}
+
+async function apiCreate(data) {
+  const res = await fetch('/api/tasks', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+async function moveTask(id, direction) {
+  const t = tasks.find(x => x.id === id);
+  const i = COL_ORDER.indexOf(t.col);
+  const newCol = direction === 'left' ? COL_ORDER[i - 1] : COL_ORDER[i + 1];
+  if (!newCol) return;
+  t.col = newCol;
+  refreshBoard();
+  await apiPatch(id, { col: newCol });
+  toast(direction === 'left' ? 'Moved back' : 'Moved forward');
+}
+
+async function deleteTask(id) {
+  tasks = tasks.filter(x => x.id !== id);
+  refreshBoard();
+  await apiDelete(id);
+  toast('Task removed');
+}
+
+async function createTask() {
+  const title = document.getElementById('inputTitle').value.trim();
+  if (!title) { document.getElementById('inputTitle').focus(); return; }
+  const data = {
+    title,
+    col:      document.getElementById('inputCol').value,
+    priority: document.getElementById('inputPriority').value,
+    tag:      document.getElementById('inputTag').value,
+  };
+  closeModal();
+  const newTask = await apiCreate(data);
+  tasks.push(newTask);
+  refreshBoard();
+  toast('Task created');
+}
+
+// ── Drag & Drop ───────────────────────────────────────────────────────────────
+function onDragStart(e, id) {
+  dragId = id;
+  setTimeout(() => document.getElementById('card-' + id)?.classList.add('dragging'), 0);
+}
+function onDragEnd() {
+  document.querySelectorAll('.card.dragging').forEach(el => el.classList.remove('dragging'));
+  document.querySelectorAll('.column.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+function onDragOver(e, colId) {
+  e.preventDefault();
+  document.querySelector(`.column[data-col="${colId}"]`).classList.add('drag-over');
+}
+function onDragLeave(e) { e.currentTarget.closest('.column')?.classList.remove('drag-over'); }
+async function onDrop(e, colId) {
+  e.preventDefault();
+  if (!dragId) return;
+  const t = tasks.find(x => x.id === dragId);
+  if (t && t.col !== colId) {
+    t.col = colId;
+    refreshBoard();
+    await apiPatch(dragId, { col: colId });
+    toast('Task moved');
+  }
+  dragId = null;
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function openModal(colId) {
+  document.getElementById('inputTitle').value = '';
+  document.getElementById('inputDesc').value = '';
+  document.getElementById('inputCol').value = colId || 'todo';
+  document.getElementById('inputPriority').value = 'med';
+  document.getElementById('inputTag').value = 'dev';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('inputTitle').focus(), 60);
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── Keyboard shortcuts ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modalOverlay').classList.contains('open')) {
+    if (document.activeElement.tagName !== 'TEXTAREA') createTask();
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+});
+</script>
+</body>
+</html>
